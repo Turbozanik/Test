@@ -2,10 +2,13 @@ package by.test.roma.testapp;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -27,12 +30,13 @@ import at.theengine.android.simple_rss2_android.SimpleRss2ParserCallback;
 public class HelloFragment extends Fragment {
 
     private ProgressDialog progressDialog;
-    final ParseObject parseItem = new ParseObject("RssParceItem");
-    List <ParseObject> parseList = new ArrayList<ParseObject>();
+
+    Context context;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        setHasOptionsMenu(true);
         progressDialog = ProgressDialog.show(getActivity(), "",
                 "Update", true);
 
@@ -41,21 +45,14 @@ public class HelloFragment extends Fragment {
                     @Override
                     public void onFeedParsed(List<RSSItem> items) {
                         for(int i = 0; i < items.size(); i++){
-                            parseItem.put("Title",items.get(i).getTitle());
-                            parseItem.put("Link",items.get(i).getLink().toString());
-                            parseItem.put("Description",items.get(i).getDescription());
-                            parseList.add(parseItem);
+                            by.test.roma.testapp.RSSItem rssItem = new by.test.roma.testapp.RSSItem(items.get(i).getTitle(), items.get(i).getLink().toString(), items.get(i).getDescription(),items.get(i).getDate());
+                            rssItem.save();
                             Log.d("SimpleRss2ParserDemo", items.get(i).getTitle());
-                        }
-                        try {
-                            ParseObject.pinAll(parseList);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
                         }
                     }
                     @Override
-                    public void onError(Exception ex) {
-                        Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+                    public void onError(Exception e) {
+
                     }
                 });
         parser.parseAsync();
@@ -64,4 +61,10 @@ public class HelloFragment extends Fragment {
 
         return inflater.inflate(R.layout.hello_fragment, container, false);
     }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
 }

@@ -3,19 +3,26 @@ package by.test.roma.testapp;
 /**
  * Created by Roma on 05.10.2015.
  */
-import java.net.MalformedURLException;
-import java.net.URL;
 
-public class RSSItem{
+
+import com.orm.SugarRecord;
+
+
+public class RSSItem extends SugarRecord<RSSItem> {
+
     private String title;
     private String link;
     private String description;
     private String content;
     private String date;
 
-    RSSItem(String title,String url,String description){
+    public RSSItem(){}
+
+
+    RSSItem(String title,String url,String description,String date){
         this.title = title;
         this.link = url;
+        this.date = date;
         this.description = description;
     }
 
